@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="{{ 'te' if session.get('lang') == 'te' else 'en' }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    {% if session.get('lang') == 'te' %}
+      ఖర్చు జోడించండి
+    {% else %}
+      Add Expense
+    {% endif %}
+  </title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at 30% 30%, rgba(72, 0, 255, 0.25), transparent 70%),
+                  radial-gradient(circle at 70% 70%, rgba(0, 255, 255, 0.15), transparent 70%),
+                  linear-gradient(135deg, #0a0f29, #050b1f);
+      color: white;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+
+    /* Floating blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 20s infinite ease-in-out alternate;
+    }
+
+    .blob:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      width: 300px;
+      height: 300px;
+      background: #6a00ff;
+    }
+
+    .blob:nth-child(2) {
+      bottom: 15%;
+      right: 10%;
+      width: 350px;
+      height: 350px;
+      background: #00fff0;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -50px) scale(1.2); }
+    }
+
+    /* Glass panel */
+    .glass-card {
+      max-width: 550px;
+      margin: 130px auto;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px);
+      padding: 35px;
+      border-radius: 20px;
+      color: white;
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.08);
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h3 {
+      text-align: center;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00eaff, #9a00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00eaff; }
+      to { text-shadow: 0 0 20px #9a00ff; }
+    }
+
+    .btn-gradient {
+      background: linear-gradient(90deg, #00eaff, #6a00ff);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      width: 100%;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn-gradient:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00eaff;
+    }
+
+    .form-control, .form-select {
+      background: rgba(255, 255, 255, 0.1);
+      border: rgba(255, 255, 255, 0.3) 1px solid;
+      color:#6a00ff;
+    }
+    .form-control::placeholder { color: #ddd; }
+
+    .lang-toggle {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    .lang-btn {
+      background: linear-gradient(90deg, #00eaff, #6a00ff);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Blobs (same as dashboard) -->
+  <div class="blob"></div>
+  <div class="blob"></div>
+
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <form action="#" method="POST">
+      {% if session.get('lang') == 'te' %}
+        <input type="hidden" name="language" value="en">
+        <button class="lang-btn">English</button>
+      {% else %}
+        <input type="hidden" name="language" value="te">
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Glass Card Form -->
+  <div class="glass-card">
+    <h3 class="mb-4">
+        Add New Expense
+    </h3>
+
+    <form method="POST">
+      <div class="mb-3">
+        <label> Title </label>
+        <input type="text" name="title" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label>Amount (₹)</label>
+        <input type="number" step="0.01" name="amount" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label>Category</label>
+        <select name="category" class="form-select" required>
+          <option value="">
+ --Select Category--
+          </option>
+          <option value="Food">🍔 Food</option>
+          <option value="Entertainment">🎬 Entertainment</option>
+          <option value="Health">💊 Health</option>
+          <option value="Bills">💡 Bills</option>
+          <option value="Travel">🚗 Travel</option>
+          <option value="Shopping">🛍️ Shopping</option>
+          <option value="Other">📦 Other</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label>Date</label>
+        <input type="date" name="date" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label> Description </label>
+        <textarea name="description" class="form-control"></textarea>
+      </div>
+
+      <button type="submit" class="btn-gradient">
+        Add Expense 
+      </button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} text-center mt-3">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+</body>
+</html>

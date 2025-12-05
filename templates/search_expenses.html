@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Expenses</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* BODY & FONT */
+    body {
+      background: linear-gradient(135deg, #101322, #0a0d1f);
+      color: #f1f1f1;
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+      overflow-x: hidden;
+    }
+
+    h2 {
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #00e0ff;
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeSlideDown 1s ease;
+    }
+
+    /* FILTER CARD */
+    .filter-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
+      padding: 30px 40px;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 50px;
+      animation: fadeScaleIn 0.8s ease;
+    }
+
+    /* INPUT FIELDS */
+    .form-control {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: #fff;
+      padding: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .form-control::placeholder {
+      color: #a0f0ff; /* placeholder visible */
+    }
+
+    .form-control:focus {
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 0 2px rgba(0, 255, 255, 0.5);
+      color: #fff;
+    }
+
+    /* SEARCH BUTTON */
+    .btn-custom {
+      background: linear-gradient(135deg, #00e0ff, #007bff);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 16px;
+      padding: 14px 30px;
+      border: none;
+      cursor: pointer;
+      display: block;
+      margin: 30px auto;
+      font-size: 1.1rem;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+      transition: all 0.4s ease;
+      animation: pulse 2s infinite;
+    }
+
+    .btn-custom:hover {
+      background: linear-gradient(135deg, #00aaff, #0056b3);
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    }
+
+    /* RESULTS GRID */
+    .results-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      width: 100%;
+      max-width: 600px;
+      animation: fadeSlideUp 1s ease forwards;
+    }
+    /* Category dropdown styles */
+/* Category dropdown styles */
+/* Style the select box */
+.category-dropdown {
+    color: #000 !important;                  /* selected option text color */
+    background: rgba(255, 255, 255, 0.15);  /* semi-transparent background */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 500;
+    appearance: none;                        /* remove default arrow in some browsers */
+}
+
+/* Style the dropdown arrow for modern browsers */
+/* Style the select box */
+.category-dropdown {
+    color: #00e0ff;                       /* neon text color for selected item */
+    background: rgba(10, 15, 30, 0.6);    /* dark translucent background */
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 500;
+    appearance: none;                      /* remove default arrow in some browsers */
+}
+
+/* Style the dropdown arrow for modern browsers */
+/* Dropdown field (the visible part) */
+.category-dropdown {
+    color: #00e0ff;                        /* neon text for selected item */
+    background: rgba(10, 15, 30, 0.6);     /* dark transparent background */
+    border: 1px solid rgba(0, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 500;
+    appearance: none;                       /* remove default arrow */
+}
+
+/* Options inside the dropdown */
+/* The dropdown field (selected text) */
+.category-dropdown {
+    color: #00e0ff !important;               /* neon cyan visible */
+    background: rgba(10, 15, 30, 0.8) !important;  /* dark transparent background */
+    border: 1px solid rgba(0, 255, 255, 0.4) !important;
+    border-radius: 12px;
+    padding: 12px;
+    font-weight: 500;
+    -webkit-appearance: none;  /* remove default arrow */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+/* Dropdown arrow */
+.category-dropdown::after {
+    content: "▼";
+    float: right;
+    margin-right: 10px;
+    color: #00e0ff;
+}
+
+/* Options inside the dropdown */
+.category-dropdown option {
+    color: #00e0ff !important;               /* text visible */
+    background: rgba(10, 15, 30, 0.95) !important;
+}
+
+/* Placeholder option */
+.category-dropdown option[value=""] {
+    color: #66d9ff !important;               /* lighter neon for placeholder */
+}
+
+
+    .expense-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 25px 30px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.25);
+      width: 100%;
+      position: relative;
+      cursor: pointer;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px) scale(0.9);
+      animation: fadeScaleIn 0.8s forwards;
+    }
+
+    .expense-card:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 0 35px rgba(0, 255, 255, 0.5);
+    }
+
+    .expense-title {
+      font-weight: 700;
+      color: #00e0ff;
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .expense-detail {
+      font-size: 0.95rem;
+      color: #c0f0ff;
+      margin-bottom: 6px;
+      word-wrap: break-word;
+    }
+
+    .category-badge {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: rgba(0,255,255,0.35);
+      color: #00e0ff;
+      text-shadow: 0 0 5px rgba(0,255,255,0.6);
+    }
+
+    .no-data {
+      text-align: center;
+      font-size: 1.1rem;
+      margin-top: 50px;
+      color: #66d9ff;
+      animation: fadeSlideUp 1s ease;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeScaleIn {
+      0% {opacity: 0; transform: translateY(20px) scale(0.9);}
+      100% {opacity: 1; transform: translateY(0) scale(1);}
+    }
+
+    @keyframes fadeSlideDown {
+      0% {opacity: 0; transform: translateY(-20px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes fadeSlideUp {
+      0% {opacity: 0; transform: translateY(20px);}
+      100% {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes pulse {
+      0%, 100% {box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);}
+      50% {box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);}
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔍 Advanced Expense Search</h2>
+
+<form method="POST" class="filter-card row g-3">
+  <div class="col-md-6">
+   <select name="category" class="form-control category-dropdown">
+  <option value="">--Select Category--</option>
+  {% for cat in categories %}
+    <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat }}</option>
+  {% endfor %}
+</select>
+
+  </div>
+  <div class="col-md-6">
+    <input type="date" name="date" class="form-control">
+  </div>
+
+  <!-- Centered Search Button -->
+  <button type="submit" class="btn btn-custom">Search</button>
+</form>
+
+{% if expenses %}
+  <div class="results-container">
+    {% for exp in expenses %}
+      <div class="expense-card" style="animation-delay: {{ loop.index0 * 0.2 }}s">
+        <div class="expense-title">{{ exp.title }} - ₹{{ exp.amount }}</div>
+        <div class="expense-detail"><strong>Date:</strong> {{ exp.date }}</div>
+        <div class="expense-detail"><strong>Description:</strong> {{ exp.description or '-' }}</div>
+        <div class="category-badge">{{ exp.category }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  {% if request.method == 'POST' %}
+    <p class="no-data">No matching expenses found 💡</p>
+  {% endif %}
+{% endif %}
+
+
+
+</body>
+</html>

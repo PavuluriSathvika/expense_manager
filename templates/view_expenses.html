@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Expenses</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at 30% 30%, rgba(72, 0, 255, 0.25), transparent 70%),
+                  radial-gradient(circle at 70% 70%, rgba(0, 255, 255, 0.15), transparent 70%),
+                  linear-gradient(135deg, #0a0f29, #050b1f);
+      color: white;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 20s infinite ease-in-out alternate;
+    }
+
+    .blob:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      width: 300px;
+      height: 300px;
+      background: #6a00ff;
+    }
+
+    .blob:nth-child(2) {
+      bottom: 15%;
+      right: 10%;
+      width: 350px;
+      height: 350px;
+      background: #00fff0;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, -50px) scale(1.2); }
+    }
+
+    .navbar {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      color: #00eaff !important;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-link {
+      color: white !important;
+      margin-right: 20px;
+      position: relative;
+      font-weight: 500;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #00eaff;
+      transition: 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .container {
+      padding: 120px 20px;
+      max-width: 1100px;
+      margin: auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 50px;
+      background: linear-gradient(90deg, #00eaff, #9a00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00eaff; }
+      to { text-shadow: 0 0 20px #9a00ff; }
+    }
+
+    .card-glass {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 25px;
+      color: white;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
+      transition: all 0.4s ease;
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    .table {
+      color: white;
+    }
+
+    .table thead {
+      background: linear-gradient(90deg, #00eaff, #9a00ff);
+    }
+
+    .table tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      transition: 0.3s;
+    }
+
+    .btn-gradient {
+      background: linear-gradient(90deg, #00eaff, #6a00ff);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-gradient:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00eaff;
+    }
+
+    .btn-delete {
+      background: linear-gradient(90deg, #ff0044, #9a00ff);
+    }
+
+    .form-select {
+      width: auto;
+      display: inline-block;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+    }
+
+    .form-select option {
+      color: black;
+    }
+    .summary-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 15px;
+  padding: 20px 30px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+  width: fit-content;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.summary-box h4 {
+  color: white;
+  font-weight: 600;
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.summary-box .highlight {
+  background: linear-gradient(90deg, #00eaff, #9a00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+.summary-box .amount {
+  color: #00eaff;
+  font-weight: 700;
+  margin-left: 5px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+  </style>
+</head>
+
+<body>
+  <div class="blob"></div>
+  <div class="blob"></div>
+
+  <nav class="navbar navbar-expand-lg fixed-top px-4">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">Expense Manager</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_expense') }}">Add Expense</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('view_expenses') }}">View Expenses</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('monthly_salary') }}">Salary</a></li>
+        <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h2>💰 View Your Expenses</h2>
+
+    <!-- ✅ Category Filter -->
+    <div class="text-center mb-4">
+      <form method="get" action="{{ url_for('view_expenses') }}">
+        <label for="category" class="me-2 fw-bold">Filter by Category:</label>
+        <select name="category" id="category" onchange="this.form.submit()" class="form-select">
+          <option value="All" {% if selected_category == 'All' %}selected{% endif %}>All</option>
+          {% for value, label in categories %}
+  <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>{{ label }}</option>
+{% endfor %}
+
+        </select>
+      </form>
+    </div>
+
+    <!-- ✅ Expense Table -->
+    <div class="card-glass">
+      {% if expenses %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle text-center">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Amount (₹)</th>
+              <th>Category</th>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for expense in expenses %}
+            <tr>
+              <td>{{ expense.title }}</td>
+              <td>{{ expense.amount }}</td>
+              <td>{{ expense.category }}</td>
+              <td>{{ expense.date.strftime('%Y-%m-%d') if expense.date else '' }}</td>
+              <td>{{ expense.description }}</td>
+              <td>
+                <a href="{{ url_for('edit_expense', expense_id=expense.id) }}" class="btn-gradient btn-sm">📝 Edit</a>
+                <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn-gradient btn-delete btn-sm"
+                    onclick="return confirm('Are you sure you want to delete this expense?');">
+                    🗑️ Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <p class="text-center text-light">No expenses found for this category.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% if selected_category != 'All' %}
+  <div class="summary-box mx-auto mb-4 text-center">
+    <h4>💸 Total Spent on 
+      <span class="highlight">{{ selected_category }}</span>:
+      <span class="amount">₹{{ total_spent }}</span>
+    </h4>
+  </div>
+{% endif %}
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>
+    {% if session.get('lang') == 'te' %}
+      నెలసరి జీతం
+    {% else %}
+      Monthly Salary
+    {% endif %}
+  </title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: radial-gradient(circle at 30% 30%, rgba(72, 0, 255, 0.25), transparent 70%),
+                  radial-gradient(circle at 70% 70%, rgba(0, 255, 255, 0.15), transparent 70%),
+                  linear-gradient(135deg, #0a0f29, #050b1f);
+      color: white;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Floating blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 20s infinite ease-in-out alternate;
+    }
+
+    .blob:nth-child(1) {
+      top: 10%;
+      left: 10%;
+      width: 300px;
+      height: 300px;
+      background: #6a00ff;
+    }
+
+    .blob:nth-child(2) {
+      bottom: 15%;
+      right: 10%;
+      width: 350px;
+      height: 350px;
+      background: #00fff0;
+      animation-delay: 4s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0,0) scale(1); }
+      100% { transform: translate(30px,-50px) scale(1.2); }
+    }
+
+    /* Navbar like dashboard */
+    .navbar {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+    }
+    .navbar-brand {
+      font-weight: 700;
+      color: #00eaff !important;
+    }
+    .nav-link {
+      color: white !important;
+      font-weight: 500;
+      position: relative;
+    }
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: #00eaff;
+      transition: 0.3s;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Glass form box */
+    .glass-box {
+      max-width: 500px;
+      margin: 140px auto;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(15px);
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,255,255,0.05);
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    h3 {
+      text-align: center;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00eaff, #9a00ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00eaff; }
+      to   { text-shadow: 0 0 20px #9a00ff; }
+    }
+
+    .form-control {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+    }
+
+    .btn-gradient {
+      background: linear-gradient(90deg, #00eaff, #6a00ff);
+      border: none;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .btn-gradient:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00eaff;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Background Blobs -->
+  <div class="blob"></div>
+  <div class="blob"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top px-4">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">Expense Manager</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">
+          {% if session.get('lang') == 'te' %} హోమ్ {% else %} Home {% endif %}
+        </a></li>
+
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('add_expense') }}">
+          {% if session.get('lang') == 'te' %} ఖర్చు జోడించు {% else %} Add Expense {% endif %}
+        </a></li>
+
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('view_expenses') }}">
+          {% if session.get('lang') == 'te' %} ఖర్చులను చూడండి {% else %} View Expenses {% endif %}
+        </a></li>
+
+        <li class="nav-item"><a class="nav-link active" href="{{ url_for('monthly_salary') }}">
+          {% if session.get('lang') == 'te' %} వేతనం {% else %} Salary {% endif %}
+        </a></li>
+
+        <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('logout') }}">
+          {% if session.get('lang') == 'te' %} లాగౌట్ {% else %} Logout {% endif %}
+        </a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Glass Form Box -->
+  <div class="glass-box">
+    <h3>
+      {% if session.get('lang') == 'te' %}
+        నెలసరి జీతం నమోదు చేయండి
+      {% else %}
+        Enter Monthly Salary
+      {% endif %}
+    </h3>
+
+    <form action="{{ url_for('monthly_salary') }}" method="POST" class="mt-4">
+
+      <div class="mb-3">
+        <label for="salary">
+          {% if session.get('lang') == 'te' %} మీ నెలసరి జీతం (₹) {% else %} Your Monthly Salary (₹) {% endif %}
+        </label>
+        <input type="number" step="0.01" name="salary" id="salary" class="form-control" required>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4">
+        <button type="submit" name="action" value="save" class="btn-gradient">
+          {% if session.get('lang') == 'te' %} సేవ్ చేయండి {% else %} Save {% endif %}
+        </button>
+
+        <button type="submit" name="action" value="update" class="btn-gradient">
+          {% if session.get('lang') == 'te' %} అప్‌డేట్ చేయండి {% else %} Update {% endif %}
+        </button>
+      </div>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} mt-3 text-center">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

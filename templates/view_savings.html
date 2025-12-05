@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Savings Goals</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: radial-gradient(circle at 30% 30%, rgba(72, 0, 255, 0.25), transparent 70%),
+                        radial-gradient(circle at 70% 70%, rgba(0, 255, 255, 0.15), transparent 70%),
+                        linear-gradient(135deg, #0a0f29, #050b1f);
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        .blob:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            width: 300px;
+            height: 300px;
+            background: #6a00ff;
+        }
+
+        .blob:nth-child(2) {
+            bottom: 15%;
+            right: 10%;
+            width: 350px;
+            height: 350px;
+            background: #00fff0;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -50px) scale(1.2); }
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .navbar-brand { font-weight: 700; color: #00eaff !important; }
+        .nav-link { color: white !important; margin-right: 20px; font-weight: 500; }
+
+        .dashboard-container {
+            padding: 120px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card-glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: 700;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #00eaff, #9a00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00eaff; }
+            to   { text-shadow: 0 0 20px #9a00ff; }
+        }
+
+        table {
+            color: white;
+            border-collapse: separate;
+            border-spacing: 0 12px;
+        }
+
+        thead tr {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        td, th {
+            padding: 14px;
+            vertical-align: middle;
+            backdrop-filter: blur(10px);
+        }
+
+        tbody tr {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(90deg, #00eaff, #6a00ff);
+            color: white;
+            border-radius: 10px;
+            padding: 8px 14px;
+            border: none;
+        }
+
+        .btn-danger {
+            border-radius: 10px;
+            padding: 8px 14px;
+        }
+
+        .progress {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            height: 14px;
+        }
+
+        .progress-bar {
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="blob"></div>
+<div class="blob"></div>
+
+<nav class="navbar navbar-expand-lg fixed-top px-4">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">Expense Manager</a>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('add_expense') }}">Add Expense</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('view_expenses') }}">View Expenses</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('monthly_salary') }}">Salary</a></li>
+            <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="dashboard-container">
+
+    <h2>Your Savings Goals</h2>
+
+    <div class="card-glass">
+
+        <div class="d-flex justify-content-end mb-3">
+            <a href="{{ url_for('add_saving') }}" class="btn-gradient">+ Add New Goal</a>
+        </div>
+
+        <table class="table table-borderless">
+
+            <thead>
+                <tr>
+                    <th>Goal Name</th>
+                    <th>Target</th>
+                    <th>Saved</th>
+                    <th>Deadline</th>
+                    <th>Type</th>
+                    <th style="width: 220px;">Progress</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for s in savings %}
+                
+                {% set percentage = (s.saved_amount / s.target_amount * 100) if s.target_amount > 0 else 0 %}
+                
+                <tr>
+                    <td>{{ s.goal_name }}</td>
+                    <td>₹{{ s.target_amount }}</td>
+                    <td>₹{{ s.saved_amount }}</td>
+                    <td>{{ s.deadline }}</td>
+                    <td>{{ s.type }}</td>
+
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar 
+                                {% if percentage < 40 %}bg-danger
+                                {% elif percentage < 75 %}bg-warning
+                                {% else %}bg-success{% endif %}"
+                                style="width: {{ percentage }}%;">
+                            </div>
+                        </div>
+                        <small>{{ percentage|round(1) }}%</small>
+                    </td>
+
+                    <td>
+                        <a href="/update_saving/{{ s.id }}" class="btn-gradient btn-sm">Update</a>
+                        <a href="/delete_saving/{{ s.id }}" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Delete this saving goal?');">Delete</a>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
+
+</body>
+</html>
